@@ -36,11 +36,101 @@ npx @react-native-community/cli init AwesomeProject --version 0.82
 ```
 # 项目开发前先要知道的几个核心点
 ## 项目目录的划分
-
+### 由于之前初始化的模板，目录划分不是很全，这里我们自己在根目录新建src目录（包括assets、components、config、models、navigator、pages、utils、index.tsx）
+![Alt text](image-14.png)
+### 再把之前的App.tsx删除了，统一改为使用src/index.tsx
+![Alt text](image-15.png)
+### 启动测试
+![Alt text](image-16.png)
 ## 绝对路径的配置
-
+### 安装依赖
+```
+yarn add babel-plugin-module-resolver
+```
+### 配置babel.config.js
+```
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: [
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        alias: {
+          '@/utils': './src/utils',
+          '@/assets': './src/assets',
+          '@/config': './src/config',
+          '@/models': './src/models',
+          '@/pages': './src/pages',
+          '@/navigator': './src/navigator',
+          '@/components': './src/components',
+        },
+      },
+    ],
+  ],
+};
+```
+### 创建测试文件
+在src/utils创建测试文件
+![Alt text](image-17.png)
+### 导入测试
+![Alt text](image-18.png)
+因为我们没有改动原生的代码，所以直接重新启动web服务查看效果即可
+```js
+# 切记，要加--reset-cache选项，重置缓存，否则会报错
+yarn start --reset-cache
+```
+### 效果
+![Alt text](image-19.png)
+### 解决import语句，编辑器冒红色下划线提示问题
+![Alt text](image-20.png)
+配置tsconfig.json
+```
+{
+  "extends": "@react-native/typescript-config",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "**/Pods"],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/assets/*": ["assets/*"],
+      "@/components/*": ["components/*"],
+      "@/config/*": ["config/*"],
+      "@/models/*": ["models/*"],
+      "@/navigator/*": ["navigator/*"],
+      "@/pages/*": ["pages/*"],
+      "@/utils/*": ["utils/*"]
+    }
+  }
+}
+```
+![Alt text](image-21.png)
 ## 多环境配置
-
+```
+yarn add react-native-config
+```
+### 链接react-native-config
+![Alt text](image-7.png)
+### 安卓需额外配置
+![Alt text](image-9.png)
+在android/app/build.gradle的最后一行加上
+```
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+```
+![Alt text](image-10.png)
+### 在项目根目录创建.env文件
+![Alt text](image-11.png)
+内容如下：
+```
+API_URL=https://www.baidu.com
+```
+### 重新执行打包安装
+改动了build.gradle，需要重新执行yarn android进行打包安装
+可以看到，在执yarn android时，已经默认读取了环境变量配置
+![Alt text](image-8.png)
+### 测试是否生效
+![Alt text](image-12.png)
+![Alt text](image-13.png)
 ## 网络请求
 
 ## 堆栈导航器
@@ -79,5 +169,5 @@ Everything下载链接：https://www.voidtools.com/zh-cn/downloads/
 ### 原因：项目环境是需要java11，但是电脑系统环境变量配置的是java1.8版本（Android studio默认读取的是系统自身的jdk）
 ### 解决方法：直接重新在电脑配置对应版本的jdk版本环境变量即可
 ## 7.执行yarn android提升 Filename longer than 260 characters
-项目文件目录层级太长了，改短即可
+项目文件目录层级或文件名称太长了，改短即可
 ![img.png](img.png)

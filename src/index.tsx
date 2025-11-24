@@ -11,21 +11,22 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-
+import Config from 'react-native-config';
+import { test } from '@/utils/index';
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+    const isDarkMode = useColorScheme() === 'dark';
+    test();
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <AppContent />
+      <Text>API_URL:{ Config.API_URL }</Text>
     </SafeAreaProvider>
   );
 }
 
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
-
   return (
     <View style={styles.container}>
       <NewAppScreen
