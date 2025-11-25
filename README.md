@@ -163,6 +163,7 @@ export default memo((props) => {
 ## 标签导航器
 
 ## 状态管理
+
 ## 基本内置组件（只挑个别进行讲）
 ### StatusBar
 >控制应用状态栏的组件（无非就显示或隐藏状态栏、设置主题色、显示或隐藏时是否启用动画这三个设置）
@@ -281,7 +282,7 @@ Everything下载链接：https://www.voidtools.com/zh-cn/downloads/
 ## 6.Android studio提示Android Gradle plugin requires Java 11 to run. You are currently using Java 1.8
 ### 原因：项目环境是需要java11，但是电脑系统环境变量配置的是java1.8版本（Android studio默认读取的是系统自身的jdk）
 ### 解决方法：直接重新在电脑配置对应版本的jdk版本环境变量即可
-## 7.执行yarn android提升 Filename longer than 260 characters
+## 7.执行yarn android提示 Filename longer than 260 characters
 项目文件目录层级或文件名称太长了，改短即可
 ![img.png](img.png)
 ## 8.在APP根函数组件，不能使用memo包裹导出，会报错
