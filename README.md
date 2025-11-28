@@ -158,19 +158,21 @@ export default memo((props) => {
 验证请求效果
 ![Alt text](image-23.png)
 
+# 导航器
 ## 堆栈导航器
 
 ## 标签导航器
 
-## 状态管理
+# 状态管理
 
-## 基本内置组件（只挑个别进行讲）
+# 基本内置组件（只挑个别进行讲）
 ### StatusBar
->控制应用状态栏的组件（无非就显示或隐藏状态栏、设置主题色、显示或隐藏时是否启用动画这三个设置）
+>控制应用状态栏的组件（无非就显示或隐藏状态栏、状态栏安全区域占位、设置主题色、显示或隐藏时是否启用动画这三个设置）
 
->后一个组件会覆盖前一个组件
+>后一个StatusBar组件设置会覆盖前一个StatusBar组件设置
 
 >不同的平台，配置默认值可能不同、有些配置也是针对IOS或Android特有的,这里，就不多说了，用时参考官方链接即可：https://www.react-native.cn/docs/statusbar
+
 ```
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -210,7 +212,7 @@ export default function App() {
 ```
 SafeAreaView组件使不使用都可以，如果使用SafeAreaView组件的话,就不用自己处理状态栏高度的问题，直接把业务内容放到SafeAreaView组件内即可
 ### useSafeAreaInsets
-仅针对被SafeAreaProvider组件包裹的业务组件，否则，调用该hook会报错
+仅针对被SafeAreaProvider组件包裹的业务组件，否则，调用该hook会报错(如果是react-navication导航器，内部默认使用了SafeAreaProvider包裹，所以可以在react-navication的自定义组件内部，使用useSafeAreaInsets)
 #### 使用Hooks获取Safe Area Insets
 您可以通过useSafeAreaInsets() hook来访问周边的安全区域值
 ```
@@ -253,6 +255,7 @@ const ClassComponentWithInsets = withSafeAreaInsets(ClassComponent);
 // 使用增强后的组件
 <ClassComponentWithInsets someProp={1} />
 ```
+
 # 开发过程中的注意事项
 ## 1.在项目中安装完新的依赖，android会自动进行链接，如果是ios端，需要手动进入ios目录命令行执行pod install进行链接
 ![Alt text](%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17638855041412.png)
@@ -286,3 +289,5 @@ Everything下载链接：https://www.voidtools.com/zh-cn/downloads/
 项目文件目录层级或文件名称太长了，改短即可
 ![img.png](img.png)
 ## 8.在APP根函数组件，不能使用memo包裹导出，会报错
+## 9.StatusBar状态栏组件时，可以设置translucent属性，让状态栏背景透明，并且不设置状态栏占位，如果不设置translucent属性，同一android，不同机型，状态栏的占位表现不一样，有的会占位顶下导航栏、有的会与导航栏重叠
+![Alt text](image-24.png)
