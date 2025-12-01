@@ -697,7 +697,7 @@ navigation.popTo('ButtomsTabs', {
 少用，这里就暂时不说了
 ## 深度链接
 用途：让外部链接能直接打开 App 内特定页面
-知道用途即可，用到再去了解即可
+用到再了解即可
 ## useNavigation Hook：在深层组件中导航
 ```
 import { useNavigation } from '@react-navigation/native';
