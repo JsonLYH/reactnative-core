@@ -159,10 +159,561 @@ export default memo((props) => {
 ![Alt text](image-23.png)
 
 # 导航器
+基于最新版（7.x）的react navication、native stack、native bottom tabs
+官网链接：https://reactnavigation.org/docs/getting-started
+## v7 与旧版本的主要差异
+![Alt text](image-26.png)
+提示 ：@react-navigation/stack 已逐步被 @react-navigation/native-stack 替代，新项目强烈推荐使用后者以获得原生性能。
+## 依赖安装
+### 安装核心依赖
+```
+yarn install @react-navigation/native
+```
+### 添加原生能力库
+这两个库是性能优化的关键，必须安装
+```
+yarn install react-native-screens react-native-safe-area-context
+```
+### 链接原生代码
+ios端需要手动链接，android则是自动链接
+```
+npx pod-install ios 或者进入ios目录执行 pod install
+```
+### 按需安装导航器依赖
+旧版本的导航器是需要配置一些原生配置的，新版本7.x后，就不用配置了，直接安装依赖进行引入使用
+#### 堆栈导航（最常用）
+```
+yarn install @react-navigation/native-stack
+```
+#### 标签/Tab导航器
+```
+yarn install @react-navigation/bottom-tabs
+```
+#### 抽屉导航器
+```
+yarn install @react-navigation/drawer
+```
+## 路由信息统一管理
+![Alt text](image-25.png)
+
 ## 堆栈导航器
+### 关键点解析
+#### NavigationContainer ：整个应用的导航大脑，管理状态与深度链接
+#### createStackNavigator 创建一个堆栈导航器。
+#### Stack.Screen 定义每个屏幕，指定名称和对应的组件。
+#### navigation.navigate('RouteName') ：最核心的跳转方法，自动管理堆栈
+#### 所有屏幕自动接收 navigation 属性 ：无需手动传递
+![Alt text](image-28.png)
+![Alt text](image-29.png)
+### 静态配置
+链接：https://reactnavigation.org/docs/hello-react-navigation?config=static
+![Alt text](image-37.png)
+### 动态配置
+链接：https://reactnavigation.org/docs/hello-react-navigation?config=dynamic
+![Alt text](image-36.png)
+### 导航标题
+#### 静态标题
+![Alt text](image-33.png)
+#### 动态标题
+![Alt text](image-34.png)
+### 页面通信传参
+#### 页面入参声明
+比如以下详情页入参声明
+![Alt text](image-30.png)
+#### 跳转详情页，传入指定入参
+![Alt text](image-31.png)
+#### 详情页获取参数信息
+![Alt text](image-32.png)
+#### 最佳实践
+##### 最小化参数
+仅传递必要数据（如 ID），避免传递复杂对象。
+##### 默认参数
+通过 initialParams 设置默认值
+```
+<Stack.Screen
+  name="Details"
+  component={DetailsScreen}
+  initialParams={{ itemId: 0, itemName: '未知商品' }}
+/>
+```
 
-## 标签导航器
+### 自定义Header容器样式
+可以通过contentStyle进行设置
+![Alt text](image-27.png)
+### 自定义Header
+#### 自定义Header（基于@react-navigation/elements）
+```
+import { Header } from '@react-navigation/elements';
+import { RouteProp } from '@react-navigation/native'
+import { Button } from 'react-native'
+import { memo } from 'react';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
+/**
+ * 自动计算状态栏安全距离
+*/
+export default memo((props: NativeStackHeaderProps) => {
+  let { route, options, navigation } = props;
+  return (
+    <Header
+      title={options.title || ''}
+      headerStyle={options.headerStyle}
+      headerTintColor={options.headerTintColor}
+      headerLeft={() => (
+        <Button title="返回" onPress={() => navigation.goBack()} />
+      )}
+    />
+  );
+});
+```
+#### 自定义Header（手动设置状态栏的安全区域）
+```
+import { memo } from 'react'
+import { Text, StatusBar, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+/**
+ * 需要自己计算状态栏安全距离
+ */
+export default memo((props) => { 
+    let inset = useSafeAreaInsets();
+    return (
+      <View style={{ paddingTop: inset.top }}>
+        {/* translucent */}
+        <StatusBar translucent backgroundColor={'transparent'} />
+        <Text>我是自定义头部{inset.top}</Text>
+      </View>
+    );
+})
+```
+
+#### 应用前面写好的自定义组件
+```
+...
+<Stack.Screen
+  options={{
+    title: '首页',
+    header: props => {
+      return <CustomHomeHeader {...props}></CustomHomeHeader>;
+    }
+  }}
+  name="Home"
+  component={Home}
+/>
+<Stack.Screen
+  options={{
+    title: '详情页',
+    header: props => (
+      <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
+    ),
+  }}
+  name="Detail"
+  component={Detail}
+/>
+...
+```
+![Alt text](2d4969497d1c67393a79ba6aa747604e_compress.jpg)
+![Alt text](49c26a98f605815104abcf086a5a1da6_origin.jpg)
+
+## 标签/Tab导航器
+1.createNativeBottomTabNavigator目前处于实验性阶段（2025.11.29），且只支持ios、android,不支持web
+2.createBottomTabNavigator，目前处于稳定版本 支持ios、android、web
+### createBottomTabNavigator
+```
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+```
+#### 静态配置
+```
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+const MyTabs = createBottomTabNavigator({
+  screens: {
+    Home: HomeScreen,
+    Profile: ProfileScreen,
+  },
+});
+```
+#### 动态配置
+```
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
+
+function MyTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Profile' component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+```
+### createNativeBottomTabNavigator
+```
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
+```
+#### 动态配置
+```
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
+const Tab = createNativeBottomTabNavigator();
+function MyTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Profile' component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+```
+#### 静态配置
+```
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
+const MyTabs = createNativeBottomTabNavigator({
+  screens: {
+    Home: HomeScreen,
+    Profile: ProfileScreen,
+  },
+});
+```
+### 标签导航器案例演示
+因为createBottomTabNavigator是稳定版本，所以接下来的标签演示就拿稳定版本，来进行演示
+与堆栈导航器结合使用，无非就是标签套堆栈，亦或堆栈套标签，一般我们用的是堆栈导航器套标签导航器，所以接下来演示的便是堆栈导航器套标签导航器
+#### 创建ButtomsTabs.tsx
+![Alt text](image-38.png)
+```
+import Account from '@/pages/tabs/Account';
+import Found from '@/pages/tabs/Found';
+import Listen from '@/pages/tabs/Listen';
+import Home from '@/pages/Home';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { memo,useEffect } from 'react';
+import { RootStackNavigation, RootStackParamList } from '@/navigator/index';
+import { RouteProp,TabNavigationState,useNavigationState } from '@react-navigation/native';
+
+export type BottomTabParamList = {
+  Index: undefined;
+  Listen: undefined;
+  Found: undefined;
+  Account: undefined;
+};
+
+const tab = createBottomTabNavigator<BottomTabParamList>();
+
+type Route = RouteProp<RootStackParamList, 'ButtomsTabs'> & {
+  // 无法正常获取state，用hooks即可
+  state?: TabNavigationState<RootStackParamList>;
+};
+
+interface IProps {
+  navigation: RootStackNavigation;
+  route: Route;
+}
+
+export default memo((props: IProps) => {
+  let { route } = props;
+  // 标签导航、堆栈导航跳转这里都会执行
+  if (route) {
+    console.log(route)
+  }
+  // 用hooks获取state状态
+  const state = useNavigationState(state => state);
+  // 如果不想自己判断标题展示，也可以使用bottom-tab自带的标题
+  function getTitleName() {
+    const stateObj = state.routes[0].state;
+    if (stateObj) { 
+      let routeNames = stateObj.routeNames || ['Index'];
+      let index = stateObj.index || 0;
+      let currentRouteName = routeNames[index];
+      switch (currentRouteName) {
+        case 'Index':
+          return "首页"
+        case 'Listen':
+          return "我听";
+        case 'Found':
+          return "发现";
+        case 'Account':
+          return '账户';
+        default:
+          return '首页';
+      }
+    }
+    return '首页';
+  }
+  useEffect(() => {
+    // props.route.state无法获取state，用hooks即可
+    // console.log('我变化了', props.route.state);
+    let title = getTitleName();
+    props.navigation.setOptions({
+      title,
+    });
+  }, [state.routes[0].state]);
+
+  return (
+    <tab.Navigator
+      screenOptions={{
+        headerShown: false, // 取消tab自带的标题，否则与堆栈导航的头部重叠
+      }}
+    >
+      <tab.Screen
+        name="Index"
+        component={Home}
+        options={{
+          title: '首页',
+        }}
+      ></tab.Screen>
+      <tab.Screen
+        name="Listen"
+        options={{
+          title: '我听',
+        }}
+        component={Listen}
+      ></tab.Screen>
+      <tab.Screen
+        name="Found"
+        options={{
+          title: '发现',
+        }}
+        component={Found}
+      ></tab.Screen>
+      <tab.Screen
+        name="Account"
+        options={{
+          title: '账户',
+        }}
+        component={Account}
+      ></tab.Screen>
+    </tab.Navigator>
+  );
+});
+
+```
+#### 堆栈导航器嵌套标签导航器
+```
+import { memo } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { Platform, StyleSheet } from 'react-native';
+import CustomHomeHeader from '@/components/CustomHomeHeader';
+import CustomHomeHeaderByNative from '@/components/CustomHomeHeaderByNative'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+import ButtomsTabs, { BottomTabParamList } from '@/navigator/ButtomsTabs';
+import Detail from '@/pages/Detail';
+import Other from '@/pages/Other'
+
+export type RootStackParamList = {
+  ButtomsTabs: {
+    title?: string;
+    screen?: keyof BottomTabParamList;
+  };
+  Detail: {
+    id: number;
+  };
+  Other: undefined;
+};
+
+export type RootStackNavigation = NativeStackNavigationProp<RootStackParamList>;
+
+export type RootTabStackNavigation = NativeStackNavigationProp<BottomTabParamList>;
+
+let Stack = createNativeStackNavigator<RootStackParamList>();
+
+export default memo(props => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          animationDuration: 200,
+          headerTitleStyle: {
+            fontFamily: 'Georgia',
+            fontSize: 20,
+          },
+          contentStyle: {
+            marginTop: 0,
+          },
+          headerTitleAlign: 'left',
+          animation: 'slide_from_right',
+          headerStyle: {
+            ...Platform.select({
+              android: {
+                backgroundColor: '#ffffff',
+              },
+            }),
+          },
+        }}
+      >
+        <Stack.Screen
+          initialParams={{
+            title: '首页',
+          }}
+          name="ButtomsTabs"
+          options={{
+            title: '首页',
+            header: props => {
+              return <CustomHomeHeader {...props}></CustomHomeHeader>;
+            },
+          }}
+          key="ButtomsTabs"
+          component={ButtomsTabs}
+        />
+        <Stack.Screen
+          initialParams={{
+            id: 66,
+          }}
+          options={{
+            title: '详情页',
+            header: props => (
+              <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
+            ),
+          }}
+          name="Detail"
+          component={Detail}
+        />
+        <Stack.Screen
+          options={{
+            title: '其他页',
+            header: props => (
+              <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
+            ),
+          }}
+          component={Other}
+          name="Other"
+        ></Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+});
+
+```
+![Alt text](image-40.png)
+### 为Tab设置图标
+链接：https://github.com/oblador/react-native-vector-icons/blob/master/packages/fontawesome6/README.md#fontawesome-6
+#### 安装icon依赖
+```
+yarn add @react-native-vector-icons/fontawesome6
+```
+#### 使用icon
+```
+import { FontAwesome6 } from '@react-native-vector-icons/fontawesome6';
+<tab.Navigator
+    screenOptions={({ route }) => ({
+      headerShown: false, // 取消tab自带的标题，否则与堆栈导航的头部重叠
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName:any;
+        if (route.name === 'Index') {
+          iconName = focused ? 'house-chimney' : 'house';
+        } else if (route.name === 'Listen') {
+          iconName = focused ? 'music' : 'music';
+        } else if (route.name === 'Found') {
+          iconName = focused ? 'truck-field-un' : 'truck-field-un';
+        } else if (route.name === 'Account') {
+          iconName = focused ? 'user' : 'user';
+        }
+        return (
+          <FontAwesome6
+            name={iconName}
+            iconStyle="solid"
+            size={size}
+            color={color}
+          />
+        );
+      },
+      tabBarActiveTintColor: 'tomato',
+      tabBarInactiveTintColor: 'gray',
+    })}
+  >
+  ......
+</tab.Navigator>
+```
+![Alt text](2d99e8f4912eead4d899f24e717b794c_compress.jpg)
+### 自定义标签栏样式
+```
+<Tab.Navigator
+  screenOptions={{
+    tabBarStyle: {
+      backgroundColor: '#fff',
+      borderTopWidth: 1,
+      borderTopColor: '#ccc',
+    },
+    tabBarLabelStyle: {
+      fontSize: 12,
+      marginBottom: 5,
+    },
+  }}
+>
+```
+### 自定义标签栏组件
+```
+function CustomTabBar({ state, descriptors, navigation }) {
+  return (
+    <View style={{ flexDirection: 'row', height: 60, backgroundColor: '#fff' }}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label = options.tabBarLabel || route.name;
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={onPress}
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Text style={{ color: isFocused ? 'tomato' : 'gray' }}>{label}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
+<Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+
+```
+### 注意事项
+#### 1.iOS 26+ 上的 Liquid Glass 效果要求你的应用必须使用 Xcode 26 或更高版本。
+#### 2.在安卓上，最多支持5个标签页。这是底层原生组件的局限性。 
+#### 3.堆栈导航嵌套标签导航，堆栈导航跳转，也会导致标签导航重新渲染,所以，在此种嵌套的情况下，堆栈导航页面跳转到标签导航页面，最好用navigation.popTo方法，防止同时在内存中保留多份标签导航实例，占用内存，且会同时触发标签包含内部逻辑的执行，从而降低路由效率
+```
+// ButtomsTabs为堆栈导航页，Found为标签导航页
+navigation.popTo('ButtomsTabs', {
+  screen:'Found',// key名称取screen即可，reactnative会自动识别进行跳转
+});
+```
+
+## 抽屉菜单
+少用，这里就暂时不说了
+## 深度链接
+用途：让外部链接能直接打开 App 内特定页面
+知道用途即可，用到再去了解即可
+## useNavigation Hook：在深层组件中导航
+```
+import { useNavigation } from '@react-navigation/native';
+function DeepChildComponent() { 
+  const navigation = useNavigation(); 
+  return ( <Button title="返回首页" onPress={() => navigation.navigate('Home')} /> );
+}
+```
+
+## 导航器总结
+React Navigation v7 通过模块化架构和原生性能优化，成为 React Native 导航的最佳选择。记住三个核心原则：
+### 1.@react-navigation/native 是必需基础 ：所有项目都从此开始
+### 2.根据场景选择导航器：Stack 处理页面流，Tab 负责一级导航，Drawer 提供全局菜单
+### 3.嵌套而非平铺：复杂应用采用导航器组合，保持结构清晰
+### 4.在 screenOptions 中设置共享样式，确保所有屏幕的头部风格统一。
+![Alt text](image-35.png)
 # 状态管理
 
 # 基本内置组件（只挑个别进行讲）
@@ -291,3 +842,13 @@ Everything下载链接：https://www.voidtools.com/zh-cn/downloads/
 ## 8.在APP根函数组件，不能使用memo包裹导出，会报错
 ## 9.StatusBar状态栏组件时，可以设置translucent属性，让状态栏背景透明，并且不设置状态栏占位，如果不设置translucent属性，同一android，不同机型，状态栏的占位表现不一样，有的会占位顶下导航栏、有的会与导航栏重叠
 ![Alt text](image-24.png)
+## 10.reactnative中的布局默认就是纵向的flex布局
+## 11.有时使用联合声明类型的顺序会导致vscode等编辑器的类型提示不全，但是语法验证是正常的，只是没有类型提示
+![Alt text](image-39.png)
+## 12.堆栈导航嵌套标签导航，堆栈导航跳转，也会导致标签导航重新渲染,所以，在此种嵌套的情况下，堆栈导航页面跳转到标签导航页面，最好用navigation.popTo方法，防止同时在内存中保留多份标签导航实例，占用内存，且会同时触发标签内部逻辑的执行
+```
+// ButtomsTabs为堆栈导航页，Found为标签导航页
+navigation.popTo('ButtomsTabs', {
+  screen:'Found'
+});
+```
