@@ -10,6 +10,7 @@ import {
 import ButtomsTabs, { BottomTabParamList } from '@/navigator/ButtomsTabs';
 import Detail from '@/pages/Detail';
 import Other from '@/pages/Other'
+import StoreTest from '@/pages/StoreTest'
 
 export type RootStackParamList = {
   ButtomsTabs: {
@@ -20,6 +21,7 @@ export type RootStackParamList = {
     id: number;
   };
   Other: undefined;
+  StoreTest: undefined;
 };
 
 export type RootStackNavigation = NativeStackNavigationProp<RootStackParamList>;
@@ -88,6 +90,16 @@ export default memo(props => {
           }}
           component={Other}
           name="Other"
+        ></Stack.Screen>
+        <Stack.Screen
+          options={{
+            title: 'redux案例',
+            header: props => (
+              <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
+            ),
+          }}
+          component={StoreTest}
+          name="StoreTest"
         ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

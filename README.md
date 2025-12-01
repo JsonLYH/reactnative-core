@@ -715,6 +715,13 @@ React Navigation v7 通过模块化架构和原生性能优化，成为 React Na
 ### 4.在 screenOptions 中设置共享样式，确保所有屏幕的头部风格统一。
 ![Alt text](image-35.png)
 # 状态管理
+链接：https://www.redux.org.cn/tutorials/quick-start.html
+## 新建store目录
+![Alt text](image-41.png)
+## 配置babel.config.js
+![Alt text](image-42.png)
+## 配置tsconfig.json
+![Alt text](image-43.png)
 
 # 基本内置组件（只挑个别进行讲）
 ### StatusBar

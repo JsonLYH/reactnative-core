@@ -17,7 +17,10 @@ export default memo((props: IProps) => {
   };
     const goToTab = () => {
         navigation.navigate('Found');
-    };
+  };
+  const goToRedux = () => { 
+    navigation.navigate('StoreTest');
+  }
   return (
     <View>
       <Text>Home页面</Text>
@@ -28,6 +31,13 @@ export default memo((props: IProps) => {
         }}
       >
         <Button title="跳转到指定的Tab页" onPress={goToTab}></Button>
+      </View>
+      <View
+        style={{
+          marginTop: 10,
+        }}
+      >
+        <Button title="跳转redux案例页" onPress={goToRedux}></Button>
       </View>
     </View>
   );
