@@ -871,6 +871,7 @@ npx iconfont-init
 ![Alt text](image-49.png)
 ### 配置iconfont.json
 #### 去阿里icon获取Symbol的图标链接
+阿里icon官网：https://www.iconfont.cn/
 ![Alt text](image-50.png)
 填入symbol_url
 ![Alt text](image-53.png)
