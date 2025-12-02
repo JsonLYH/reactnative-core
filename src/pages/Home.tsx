@@ -3,6 +3,7 @@ import { View, Text, Button } from 'react-native';
 import { type RootStackNavigation, type RootTabStackNavigation, type RootStackParamList } from '@/navigator/index';
 import { RouteProp } from '@react-navigation/native';
 import Config from 'react-native-config'
+import Icon from '@/assets/iconfont/index'
 interface IProps {
     navigation: RootTabStackNavigation & RootStackNavigation;
 }
@@ -45,6 +46,10 @@ export default memo((props: IProps) => {
         }}
       >
         <Text>多环境配置：{Config.API_URL}</Text>
+      </View>
+      <View>
+        <Text>阿里icon图标展示</Text>
+        <Icon name="icon-dianzan" size={50} color='red'></Icon>
       </View>
     </View>
   );

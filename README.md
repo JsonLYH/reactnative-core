@@ -841,6 +841,57 @@ export default memo(() => {
 })
 ```
 ![Alt text](5043c5574312ce97e2438ab61d98c084_origin.jpg)
+# 字体图标库
+## 方式一：@react-native-vector-icons/fontawesome6库
+前面我们已经有对应的使用说明了，这里我们就不进行演示了
+此方式有个缺点就是你在开发中，可能仅仅使用到一两个图标，但是该库会把所有的图标都打包进来，这就导致了打包体积的增大，进而出现了方式二；
+## 方式二：react-native-svg + react-native-iconfont-cli
+图标通过react-native-iconfont-cli工具转换为组件，而这个组件是靠react-native-svg（包含原生模块，所以在安装依赖后，android、ios端需要重新安装app，并且ios端需要手动重新链接）来实现的
+### 背景
+因为通常项目开发，icon图标是由UI设计师进行设计的，所以如果使用方式一的话比较麻烦，而且本着按需、节省体积的原则，就有了方式二
+### 安装react-native-svg依赖
+```
+yarn add react-native-svg
+```
+```
+cd ios && pod install
+```
+### 安装react-native-iconfont-cli依赖
+```
+yarn add -D react-native-iconfont-cli
+``` 
+### ios、android重新打包安装app、ios重新链接库
+这里简单，就不多说了
+### 创建iconfont.json文件
+```
+// 在项目根目录执行以下命令
+npx iconfont-init
+```
+执行完，就会生成以下的json文件
+![Alt text](image-49.png)
+### 配置iconfont.json
+#### 去阿里icon获取Symbol的图标链接
+![Alt text](image-50.png)
+填入symbol_url
+![Alt text](image-53.png)
+![Alt text](image-52.png)
+### 生成图标组件
+```
+// 在项目根目录执行以下命令
+npx iconfont-rn
+```
+### 执行命令后，效果
+![Alt text](image-54.png)
+![Alt text](image-55.png)
+### 使用示例
+![Alt text](image-56.png)
+name我们就填上面的名称，比如icon-dianzan
+```
+import Icon from '@/assets/iconfont/index'
+......
+<Icon name="icon-dianzan" size={18} color='red'></Icon>
+```
+![Alt text](image-57.png)
 # 基本内置组件（只挑个别进行讲）
 ### StatusBar
 >控制应用状态栏的组件（无非就显示或隐藏状态栏、状态栏安全区域占位、设置主题色、显示或隐藏时是否启用动画这三个设置）
