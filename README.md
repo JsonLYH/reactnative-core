@@ -143,6 +143,7 @@ API_URL=https://www.baidu.com
 ![Alt text](image-12.png)
 ![Alt text](image-13.png)
 ## 网络请求
+### fetch
 ```
 import { memo,useState } from 'react'
 import { View,Text,Button } from 'react-native'
@@ -169,6 +170,41 @@ export default memo((props) => {
 验证请求效果
 ![Alt text](image-23.png)
 
+### axios
+#### 安装依赖
+```
+yarn add axios
+```
+#### 配置拦截器
+创建@/config/http.ts
+![Alt text](image-58.png)
+```
+import axios from 'axios'
+import Config from 'react-native-config'
+
+axios.defaults.baseURL = Config.API_URL;
+
+axios.interceptors.request.use((config) => {
+    console.log("请求拦截器")
+    return config;
+}, (error) => {
+    return Promise.reject(error)
+});
+
+axios.interceptors.response.use((response) => {
+    console.log("响应拦截器")
+    return response.data;
+}, (error) => {
+    return Promise.reject(error)
+});
+
+export default axios;
+```
+#### 使用axios
+##### 方式一
+直接在index.tsx入口,import '@/config/http',之后在需要请求数据的地方，直接import axios from 'axios'即可
+##### 方式二
+直接在需要请求数据的地方，import axios from '@/config/http'
 # 导航器
 基于最新版（7.x）的react navication、native stack、native bottom tabs
 官网链接：https://reactnavigation.org/docs/getting-started
@@ -605,6 +641,7 @@ export default memo(props => {
 yarn add @react-native-vector-icons/fontawesome6
 ```
 #### 使用icon
+以下是在tab.Navigator的screenOptions进行全局设置，你也可以在tab.Screen的options进行单独设置
 ```
 import { FontAwesome6 } from '@react-native-vector-icons/fontawesome6';
 <tab.Navigator
@@ -893,6 +930,13 @@ import Icon from '@/assets/iconfont/index'
 <Icon name="icon-dianzan" size={18} color='red'></Icon>
 ```
 ![Alt text](image-57.png)
+
+# 获取设备视口宽高
+```
+import { Dimensions } from 'react-native'
+let { width:viewPortWidth,height:viewPortHeight } = Dimensions.get('window')
+```
+
 # 基本内置组件（只挑个别进行讲）
 ### StatusBar
 >控制应用状态栏的组件（无非就显示或隐藏状态栏、状态栏安全区域占位、设置主题色、显示或隐藏时是否启用动画这三个设置）

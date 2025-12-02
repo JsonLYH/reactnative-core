@@ -4,11 +4,13 @@ import { type RootStackNavigation, type RootTabStackNavigation, type RootStackPa
 import { RouteProp } from '@react-navigation/native';
 import Config from 'react-native-config'
 import Icon from '@/assets/iconfont/index'
+import { Dimensions } from 'react-native'
 interface IProps {
     navigation: RootTabStackNavigation & RootStackNavigation;
 }
 
 export default memo((props: IProps) => {
+  let {width:viewPortWidth,height:viewPortHeight} = Dimensions.get('window')
   let { navigation } = props;
   console.log('切换到Home才会渲染了，且只会渲染一次');
   const goToDetail = () => {
@@ -49,7 +51,13 @@ export default memo((props: IProps) => {
       </View>
       <View>
         <Text>阿里icon图标展示</Text>
-        <Icon name="icon-dianzan" size={50} color='red'></Icon>
+        <Icon name="icon-dianzan" size={50} color="red"></Icon>
+        <Icon name="icon-dianzan1" size={50} color="red"></Icon>
+        <Icon name="icon-guolv" size={50} color="red"></Icon>
+      </View>
+      <View>
+        <Text>视口宽度:{viewPortWidth}</Text>
+        <Text>视口高度:{viewPortHeight}</Text>
       </View>
     </View>
   );
