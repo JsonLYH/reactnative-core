@@ -1,5 +1,16 @@
 # 版本说明
 reactnative 0.82、node 22.18.0
+# 开发环境判断
+可以通过__DEV__进行判断，以下以生产环境置空console函数为例
+```
+if (!__DEV__) { 
+    let cos = ['info', 'log', 'warn', 'error'];
+    const emptyFunc = () => { };
+    cos.forEach(item => { 
+        global.console[item] = emptyFunc;
+    })
+}
+```
 # 卸载全局的react-native-cli @react-native-community/cli
 预防后面使用
 ```js
@@ -119,7 +130,7 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 ```
 ![Alt text](image-10.png)
 ### 在项目根目录创建.env文件
-![Alt text](image-11.png)
+![Alt text](image-48.png)
 内容如下：
 ```
 API_URL=https://www.baidu.com
@@ -722,7 +733,114 @@ React Navigation v7 通过模块化架构和原生性能优化，成为 React Na
 ![Alt text](image-42.png)
 ## 配置tsconfig.json
 ![Alt text](image-43.png)
+## 同步
+![Alt text](image-44.png)
+@store/reducer/counter.ts
+```
+import { createSlice } from "@reduxjs/toolkit";
+const CounterState = createSlice({
+  name: "counter",
+  initialState: {
+    value: 0,
+  },
+  //同步reducers
+  reducers: {
+    incremented: (state) => {
+      // Redux Toolkit 允许在 reducers 中编写 "mutating" 逻辑。
+      // 它实际上并没有改变 state，因为使用的是 Immer 库，检测到“草稿 state”的变化并产生一个全新的
+     // 基于这些更改的不可变的 state。
+      state.value += 1;
+    },
+    decremented: (state) => {
+      state.value -= 1;
+    },
+  }
+});
+export const { incremented, decremented } = CounterState.actions;
+export default CounterState.reducer;
 
+```
+@store/reducer/index.ts
+```
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import counterReducer from "./reducer/counter";
+// 合并所有的reducer
+export const rootReducer = combineReducers({
+  counter: counterReducer,
+});
+// 实现loggerMiddleware,注意这里的函数嵌套结构
+const loggerMiddleware = (store:any) => (next:any) => (action:any) => {
+  console.log("action", action);
+  //中间如果有异步请求，会等待异步请求完成
+  const result = next(action);
+  console.log("result", result);
+  return result;
+};
+export const store = configureStore({
+    devTools: false,
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        // 注意关闭serializableCheck,否则会报错
+        serializableCheck: false,
+      }).concat(loggerMiddleware),
+})
+
+```
+## 异步
+### 编写AsyncThunk
+![Alt text](image-46.png)
+@/store/asyncActions/counterAsyncAction.ts
+```
+import { createAsyncThunk } from "@reduxjs/toolkit";
+export const getTestDataAction = createAsyncThunk(
+    'counter/getTestData',
+    async (payload,extraInfo) => {
+      let data = await fetch("https://api-v2.xdclass.net/api/teacher/v1/list").then(res => { 
+        return res.json();
+      })
+      return data;
+    }
+)
+```
+### 在reducer编写条件断点
+![Alt text](image-47.png)
+## 在入口引入store、Provider
+![Alt text](image-45.png)
+## 页面测试
+```
+import { View, Text, Button,FlatList } from 'react-native'
+import { memo } from 'react'
+import { useDispatch, useSelector,shallowEqual } from 'react-redux'
+import { incremented, decremented } from '@/store/reducer/counter'
+import { getTestDataAction } from '@/store/asyncActions/counterAsyncAction'
+
+export default memo(() => { 
+    const dispatch = useDispatch();
+    const counter:any = useSelector((state:any) => state.counter, shallowEqual);
+    return (
+      <View>
+        <Button title="加" onPress={() => dispatch(incremented())}></Button>
+        <Text>redux案例：{counter.value}</Text>
+        <Button title="减" onPress={() => dispatch(decremented())}></Button>
+        <View style={{ marginTop: 10 }}>
+          <Button
+            title="异步请求"
+            onPress={() => dispatch(getTestDataAction() as any)}
+          ></Button>
+        </View>
+        <FlatList data={counter.list} renderItem={(data) => { 
+          return (
+            <View>
+              <Text>{ data.item.name }</Text>
+            </View>
+          )
+        }}></FlatList>
+      </View>
+    );
+})
+```
+![Alt text](5043c5574312ce97e2438ab61d98c084_origin.jpg)
 # 基本内置组件（只挑个别进行讲）
 ### StatusBar
 >控制应用状态栏的组件（无非就显示或隐藏状态栏、状态栏安全区域占位、设置主题色、显示或隐藏时是否启用动画这三个设置）
@@ -813,7 +931,26 @@ const ClassComponentWithInsets = withSafeAreaInsets(ClassComponent);
 // 使用增强后的组件
 <ClassComponentWithInsets someProp={1} />
 ```
-
+# 启动页配置
+## ios
+后续完善
+## android
+后续完善
+# 启动图标配置
+## ios
+后续完善
+## android
+后续完善
+# 打包信息配置
+## ios
+后续完善
+## android
+后续完善
+# 打包发布
+## 内测版本
+后续完善
+## 正式发布
+后续完善
 # 开发过程中的注意事项
 ## 1.在项目中安装完新的依赖，android会自动进行链接，如果是ios端，需要手动进入ios目录命令行执行pod install进行链接
 ![Alt text](%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17638855041412.png)

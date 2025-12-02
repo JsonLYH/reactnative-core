@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { View, Text, Button } from 'react-native';
 import { type RootStackNavigation, type RootTabStackNavigation, type RootStackParamList } from '@/navigator/index';
 import { RouteProp } from '@react-navigation/native';
-
+import Config from 'react-native-config'
 interface IProps {
     navigation: RootTabStackNavigation & RootStackNavigation;
 }
@@ -38,6 +38,13 @@ export default memo((props: IProps) => {
         }}
       >
         <Button title="跳转redux案例页" onPress={goToRedux}></Button>
+      </View>
+      <View
+        style={{
+          marginTop: 10,
+        }}
+      >
+        <Text>多环境配置：{Config.API_URL}</Text>
       </View>
     </View>
   );

@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getTestDataAction } from '@/store/asyncActions/counterAsyncAction'
 const CounterState = createSlice({
   name: "counter",
   initialState: {
     value: 0,
+    list:[]
   },
   //同步reducers
   reducers: {
@@ -15,6 +17,12 @@ const CounterState = createSlice({
     decremented: (state) => {
       state.value -= 1;
     },
+  },
+  extraReducers: (builder) => { 
+    builder.addCase(getTestDataAction.fulfilled, (state, action) => {
+      state.list = action.payload.data;
+      console.log("异步请求的数据",action.payload);
+    })
   }
 });
 export const { incremented, decremented } = CounterState.actions;
