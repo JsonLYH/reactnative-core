@@ -1032,7 +1032,7 @@ const ClassComponentWithInsets = withSafeAreaInsets(ClassComponent);
 # 启动页配置
 ## react-native-splash-screen
 社区停更好几年、pr也没人合并、问题也很多、也不兼容最新版rn（打包会报类重复的错）、作者跟人间蒸发似的
-## react-native-bootsplash github
+## react-native-bootsplash
 配置简单，支持静态启动页、动态启动页，社区维护积极，问题少，支持最新版reactnative
 
 链接：https://github.com/zoontek/react-native-bootsplash
