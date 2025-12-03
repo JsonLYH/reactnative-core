@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Platform, StyleSheet } from 'react-native';
 import CustomHomeHeader from '@/components/CustomHomeHeader';
 import CustomHomeHeaderByNative from '@/components/CustomHomeHeaderByNative'
+import BootSplash from 'react-native-bootsplash';
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -32,7 +33,15 @@ let Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default memo(props => {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      onReady={() => { 
+        setTimeout(() => {
+          BootSplash.hide({
+            fade:true
+          });
+        }, 300);
+      }}
+    >
       <Stack.Navigator
         screenOptions={{
           animationDuration: 200,
@@ -78,6 +87,7 @@ export default memo(props => {
               <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
             ),
           }}
+          key="Detail"
           name="Detail"
           component={Detail}
         />
@@ -88,6 +98,7 @@ export default memo(props => {
               <CustomHomeHeaderByNative {...props}></CustomHomeHeaderByNative>
             ),
           }}
+          key="Other"
           component={Other}
           name="Other"
         ></Stack.Screen>
@@ -99,6 +110,7 @@ export default memo(props => {
             ),
           }}
           component={StoreTest}
+          key="StoreTest"
           name="StoreTest"
         ></Stack.Screen>
       </Stack.Navigator>

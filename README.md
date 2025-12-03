@@ -1,5 +1,7 @@
 # 版本说明
 reactnative 0.82、node 22.18.0
+# 原生第三方库合集
+链接：https://reactnative.directory/
 # 开发环境判断
 可以通过__DEV__进行判断，以下以生产环境置空console函数为例
 ```
@@ -1028,11 +1030,178 @@ const ClassComponentWithInsets = withSafeAreaInsets(ClassComponent);
 <ClassComponentWithInsets someProp={1} />
 ```
 # 启动页配置
+## react-native-splash-screen
+社区停更好几年、pr也没人合并、问题也很多、也不兼容最新版rn（打包会报类重复的错）、作者跟人间蒸发似的
+## react-native-bootsplash github
+配置简单，支持静态启动页、动态启动页，社区维护积极，问题少，支持最新版reactnative
+链接：https://github.com/zoontek/react-native-bootsplash
+## 安装依赖
+```
+yarn add react-native-bootsplash
+```
 ## ios
-后续完善
+### 链接原生库
+```
+cd ios && pod install
+```
+### 准备好启动图
+最小的更改iOS使用LaunchScreen 把图片放入到里面
+### 配置AppDelegate.swift
+#### iOS (react-native 0.79+)
+Edit your ios/YourApp/AppDelegate.swift file:
+```
+import ReactAppDependencyProvider
+import RNBootSplash // ⬅️ add this import
+
+// …
+
+class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
+
+  // …
+
+  // ⬇️ override this method
+  override func customize(_ rootView: RCTRootView) {
+    super.customize(rootView)
+    RNBootSplash.initWithStoryboard("BootSplash", rootView: rootView) // ⬅️ initialize the splash screen
+  }
+}
+```
+#### iOS (react-native 0.77+)
+Edit your ios/YourApp/AppDelegate.swift file:
+```
+import ReactAppDependencyProvider
+import RNBootSplash // ⬅️ add this import
+
+// …
+
+@main
+class AppDelegate: RCTAppDelegate {
+
+  // …
+
+  // ⬇️ override this method
+  override func customize(_ rootView: RCTRootView!) {
+    super.customize(rootView)
+    RNBootSplash.initWithStoryboard("BootSplash", rootView: rootView) // ⬅️ initialize the splash screen
+  }
+}
+```
+
 ## android
-后续完善
-# 启动图标配置
+### 链接原生库
+reactnative 0.60以后，android自动链接原生库
+### 配置MainActivity.kt
+```
+...
+import android.os.Bundle
+import com.zoontek.rnbootsplash.RNBootSplash
+...
+override fun onCreate(savedInstanceState: Bundle?) {
+  // 重置主题样式，防止使用.9图时，造成布局异常
+  setTheme(R.style.AppTheme)
+  RNBootSplash.init(this, R.style.BootTheme)
+  super.onCreate(savedInstanceState)
+}
+```
+![Alt text](image-59.png)
+### 准备好.9图
+![Alt text](image-60.png)
+### colors.xml
+android/app/src/main/res/values/colors.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_color">#80000000</color>
+</resources>
+```
+### styles.xml
+android/app/src/main/res/values/styles.xml
+```
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <!-- android:windowIsTranslucent、android:windowBackground会冲突，只能设置一个 -->
+        <!-- 设置透明背景 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <!-- android:windowIsTranslucent、android:windowBackground会冲突，只能设置一个 -->
+        <!-- 设置透明背景 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- @drawable/启动图名称 -->
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+    
+    <style name="BootTheme" parent="Theme.BootSplash.EdgeToEdge">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>
+
+```
+### 在项目中使用
+#### 方式一：配合NavigationContainer生命周期使用
+```
+import { NavigationContainer } from "@react-navigation/native";
+import BootSplash from "react-native-bootsplash";
+
+const App = () => (
+  <NavigationContainer
+    onReady={() => {
+      BootSplash.hide();
+    }}
+  >
+    {/* content */}
+  </NavigationContainer>
+);
+```
+#### 方式二：配合useEffect使用
+```
+import { useEffect } from "react";
+import { Text } from "react-native";
+import BootSplash from "react-native-bootsplash";
+
+const App = () => {
+  useEffect(() => {
+    const init = async () => {
+      // …do multiple sync or async tasks
+    };
+
+    init().finally(async () => {
+      await BootSplash.hide({ fade: true });
+      console.log("BootSplash has been hidden successfully");
+    });
+  }, []);
+
+  return <Text>My awesome app</Text>;
+};
+```
+### 重新打包android包，启动预览
+```
+yarn android
+```
+
+### 注意事项
+1.调用BootSplash.hide的执行时机，最好配合setTimeout使用，否则大概率会出现启动页-》首页的过程，出现闪屏或者页面抖动的情况
+2.android端，windowBackground在配置.9图时，记得要调用setTheme(R.style.AppTheme)进行重置主题样式，否则会出现屏幕显示异常，比如以下图片
+![Alt text](4a36fe0ae2f776ea5e976c6b05189fcd_compress.jpg)
+# APP图标配置
 ## ios
 后续完善
 ## android

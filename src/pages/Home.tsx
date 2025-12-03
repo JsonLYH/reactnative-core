@@ -27,6 +27,10 @@ export default memo((props: IProps) => {
   return (
     <View>
       <Text>Home页面</Text>
+      <View>
+        <Text>视口宽度:{viewPortWidth}</Text>
+        <Text>视口高度:{viewPortHeight}</Text>
+      </View>
       <Button title="跳转到详情页(传递id=100)" onPress={goToDetail}></Button>
       <View
         style={{
@@ -54,10 +58,6 @@ export default memo((props: IProps) => {
         <Icon name="icon-dianzan" size={50} color="red"></Icon>
         <Icon name="icon-dianzan1" size={50} color="red"></Icon>
         <Icon name="icon-guolv" size={50} color="red"></Icon>
-      </View>
-      <View>
-        <Text>视口宽度:{viewPortWidth}</Text>
-        <Text>视口高度:{viewPortHeight}</Text>
       </View>
     </View>
   );
