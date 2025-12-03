@@ -880,6 +880,29 @@ export default memo(() => {
 })
 ```
 ![Alt text](5043c5574312ce97e2438ab61d98c084_origin.jpg)
+# 状态管理之持久化
+## redux-offline
+github:https://github.com/redux-offline/redux-offline
+离线优先（Offline-First）应用程序的持久化存储，支持乐观 UI
+
+## redux-persist
+github:https://github.com/rt2zz/redux-persist
+持久化和补充 Redux store，有许多可扩展的选项
+### 安装依赖
+```
+yarn add redux-persist
+```
+### 安装移动端存储引擎
+```
+yarn add @react-native-async-storage/async-storage
+```
+### 配置
+在之前配置的基础上进行改动
+### 重新安装APP基座
+```
+yarn ios 或 yarn android
+```
+![Alt text](image-61.png)
 # 字体图标库
 ## 方式一：@react-native-vector-icons/fontawesome6库
 前面我们已经有对应的使用说明了，这里我们就不进行演示了
