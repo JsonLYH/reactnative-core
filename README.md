@@ -883,8 +883,9 @@ export default memo(() => {
 # 状态管理之持久化
 ## redux-offline
 github:https://github.com/redux-offline/redux-offline
+参考博文：https://blog.csdn.net/gitblog_00358/article/details/143881969
 离线优先（Offline-First）应用程序的持久化存储，支持乐观 UI
-
+一般应用是用不到，这个以后再补充
 ## redux-persist
 github:https://github.com/rt2zz/redux-persist
 持久化和补充 Redux store，有许多可扩展的选项
