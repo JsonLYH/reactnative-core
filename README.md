@@ -1034,6 +1034,7 @@ const ClassComponentWithInsets = withSafeAreaInsets(ClassComponent);
 社区停更好几年、pr也没人合并、问题也很多、也不兼容最新版rn（打包会报类重复的错）、作者跟人间蒸发似的
 ## react-native-bootsplash github
 配置简单，支持静态启动页、动态启动页，社区维护积极，问题少，支持最新版reactnative
+
 链接：https://github.com/zoontek/react-native-bootsplash
 ## 安装依赖
 ```
@@ -1254,7 +1255,11 @@ Everything下载链接：https://www.voidtools.com/zh-cn/downloads/
 ## 10.reactnative中的布局默认就是纵向的flex布局
 ## 11.有时使用联合声明类型的顺序会导致vscode等编辑器的类型提示不全，但是语法验证是正常的，只是没有类型提示
 ![Alt text](image-39.png)
-## 12.堆栈导航嵌套标签导航，堆栈导航跳转，也会导致标签导航重新渲染,所以，在此种嵌套的情况下，堆栈导航页面跳转到标签导航页面，最好用navigation.popTo方法，防止同时在内存中保留多份标签导航实例，占用内存，且会同时触发标签内部逻辑的执行
+## 12.android清除gradlew缓存依赖
+```
+cd android && gradlew clean
+```
+## 13.堆栈导航嵌套标签导航，堆栈导航跳转，也会导致标签导航重新渲染,所以，在此种嵌套的情况下，堆栈导航页面跳转到标签导航页面，最好用navigation.popTo方法，防止同时在内存中保留多份标签导航实例，占用内存，且会同时触发标签内部逻辑的执行
 ```
 // ButtomsTabs为堆栈导航页，Found为标签导航页
 navigation.popTo('ButtomsTabs', {
