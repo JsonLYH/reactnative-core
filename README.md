@@ -912,7 +912,7 @@ npx iconfont-init
 #### 去阿里icon获取Symbol的图标链接
 阿里icon官网：https://www.iconfont.cn/
 ![Alt text](image-50.png)
-填入symbol_url
+填入symbol_url（注意不能写成http://，不要指定协议开头，否则执行icon转换命令会报symbol_url为空）
 ![Alt text](image-53.png)
 ![Alt text](image-52.png)
 ### 生成图标组件
