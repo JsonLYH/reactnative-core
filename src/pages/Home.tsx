@@ -1,10 +1,10 @@
-import { memo } from 'react';
+import { memo,useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import { type RootStackNavigation, type RootTabStackNavigation, type RootStackParamList } from '@/navigator/index';
 import { RouteProp } from '@react-navigation/native';
 import Config from 'react-native-config'
 import Icon from '@/assets/iconfont/index'
-import { Dimensions } from 'react-native'
+import { Dimensions,ToastAndroid,BackHandler } from 'react-native'
 interface IProps {
     navigation: RootTabStackNavigation & RootStackNavigation;
 }
@@ -12,6 +12,29 @@ interface IProps {
 export default memo((props: IProps) => {
   let {width:viewPortWidth,height:viewPortHeight} = Dimensions.get('window')
   let { navigation } = props;
+  let backHandlerPressedCount = 0;
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (navigation.isFocused()) {
+          if (backHandlerPressedCount < 1) {
+            backHandlerPressedCount++;
+            ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+            setTimeout(() => {
+              backHandlerPressedCount = 0;
+            }, 2000);
+            return true;
+          } else {
+            backHandlerPressedCount = 0;
+            BackHandler.exitApp();
+            return false;
+          }
+        }
+      },
+    );
+    return () => backHandler.remove();
+  }, []);
   console.log('切换到Home才会渲染了，且只会渲染一次');
   const goToDetail = () => {
     navigation.navigate('Detail', {
